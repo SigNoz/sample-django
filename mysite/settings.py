@@ -54,7 +54,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "polls.middleware.StatsdMetricsMiddleware"
 ]
 
 ROOT_URLCONF = "mysite.urls"
