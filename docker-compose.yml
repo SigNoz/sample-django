@@ -1,0 +1,26 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+
+  django-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - otel-collector
+    environment:
+      OTEL_RESOURCE_ATTRIBUTES: service.name=sample-django-app
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      OTEL_TRACES_EXPORTER: console,otlp
+      OTEL_METRICS_EXPORTER: none
+      DJANGO_SETTINGS_MODULE: mysite.settings
+      DEVELOPMENT_MODE: "True"
+    ports:
+      - "8000:8000"
